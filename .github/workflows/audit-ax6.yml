@@ -1,0 +1,46 @@
+
+name: Audit Redmi AX6 NSS target
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout qosmio source
+        uses: actions/checkout@v4
+        with:
+          repository: https://github.com/qosmio/openwrt-ipq
+          ref: 25.12-nss
+          path: openwrt-ipq
+
+      - name: Inspect AX6 device and image definitions
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cd openwrt-ipq
+
+          echo "===== Source revision ====="
+          git log -1 --format='%H %s'
+
+          echo "===== Device profile in NSS seed ====="
+          grep -n -E 'DEVICE_(redmi_ax6|xiaomi_ax3600)' \
+            nss-setup/config-nss.seed || true
+
+          echo "===== AX6 partition/image references ====="
+          grep -RniE \
+            'redmi_ax6(-stock)?|rootfs_1|MIBIB|ubi' \
+            target/linux/qualcommax/ipq807x \
+            target/linux/qualcommax/image 2>/dev/null || true
+
+          echo "===== Relevant image rules ====="
+          find target/linux/qualcommax -type f \
+            \( -name '*.mk' -o -name '*.dts' -o -name '*.dtsi' \) \
+            -print
+
+          echo "===== Repository branch ====="
+          git branch --show-current
