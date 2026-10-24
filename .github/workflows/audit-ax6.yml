@@ -14,7 +14,7 @@ jobs:
       - name: Checkout qosmio source
         uses: actions/checkout@v4
         with:
-          repository: https://github.com/qosmio/openwrt-ipq
+          repository: qosmio/openwrt-ipq
           ref: 25.12-nss
           path: openwrt-ipq
 
