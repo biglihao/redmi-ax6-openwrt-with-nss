@@ -22,15 +22,13 @@ env:
   PATCH_FILE: sotck.patch
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_COWTRANSFER: false
-  UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
 
 jobs:
   build:
     runs-on: ubuntu-26.04
-
+    
     steps:
     - name: Checkout
       uses: actions/checkout@main
