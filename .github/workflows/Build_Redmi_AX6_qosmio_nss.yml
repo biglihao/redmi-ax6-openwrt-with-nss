@@ -9,16 +9,10 @@
 #
 
 name: Build_Redmi_AX6_qosmio_nss
-permissions:
-    contents: write
+
 on:
   repository_dispatch:
   workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'SSH connection to Actions'
-        required: false
-        default: 'false'
 
 env:
   REPO_URL: https://github.com/qosmio/openwrt-ipq
