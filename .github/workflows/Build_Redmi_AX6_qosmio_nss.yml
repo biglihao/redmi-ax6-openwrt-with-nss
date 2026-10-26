@@ -47,6 +47,21 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+
+    - name: Setup Go 1.27+
+      uses: actions/setup-go@v6
+      with: 
+          go-version: '1.27'
+          cache: false
+
+    - name: Verify Go toolchain
+      shell: bash
+      run: |
+        set -eux
+        which go
+        go version
+        go env GOROOT GOPATH GOTOOLCHAIN
+        test "$(go env GOVERSION | cut -d. -f1-2)" = "go1.27"
         
     - name: Clone source code
       working-directory: /workdir
