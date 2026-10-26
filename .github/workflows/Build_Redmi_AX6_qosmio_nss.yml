@@ -137,7 +137,7 @@ jobs:
         test -x "$GO_BIN/go"
         "$GO_BIN/go" version
 
-        SCRIPT="feeds/packages/lang/golang/golang-build.sh"
+        SCRIPT="/workdir/openwrt/feeds/packages/lang/golang/golang-build.sh"
         test -f "$SCRIPT"
 
         cp "$SCRIPT" "$SCRIPT.bak"
