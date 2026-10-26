@@ -74,7 +74,7 @@ jobs:
     - name: Add ax6 fullubi
       run: |
         [ -e $PATCH1_FILE ] && mv $PATCH1_FILE openwrt/0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
-        [ -e $PATCH1_FILE ] && mv $PATCH1_FILE openwrt/0002-qualcommax-ax6-single-rootfs-upgrade.patch
+        [ -e $PATCH2_FILE ] && mv $PATCH2_FILE openwrt/0002-qualcommax-ax6-single-rootfs-upgrade.patch
         cd openwrt
         git apply --check 0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
         git apply --check 0002-qualcommax-ax6-single-rootfs-upgrade.patch
