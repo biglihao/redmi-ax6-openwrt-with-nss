@@ -1,0 +1,31 @@
+--- a/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
++++ b/target/linux/qualcommax/ipq807x/base-files/lib/upgrade/platform.sh
+@@ -14,17 +14,10 @@
+ 		return 1
+ 	fi
+ 
+-	local kern_mtdnum="$( find_mtd_index ubi_kernel )"
+-	if [ ! "$kern_mtdnum" ]; then
+-		echo "unable to find mtd partition ubi_kernel"
+-		return 1
+-	fi
+ 
+ 	ubidetach -m "$rootfs_mtdnum"
+ 	ubiformat /dev/mtd$rootfs_mtdnum -y
+ 
+-	ubidetach -m "$kern_mtdnum"
+-	ubiformat /dev/mtd$kern_mtdnum -y
+ }
+ 
+ asus_initial_setup() {
+@@ -252,8 +245,8 @@
+ 		fw_setenv flag_try_sys1_failed 8
+ 		fw_setenv flag_try_sys2_failed 8
+ 
+-		# Kernel and rootfs are placed in 2 different UBI
+-		CI_KERN_UBIPART="ubi_kernel"
++		# Kernel (vol0) and rootfs (vol1) live in the same single UBI rootfs partition
++		CI_KERN_UBIPART="rootfs"
+ 		CI_ROOT_UBIPART="rootfs"
+ 		nand_do_upgrade "$1"
+ 		;;
