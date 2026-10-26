@@ -18,8 +18,8 @@ env:
   REPO_URL: https://github.com/qosmio/openwrt-ipq
   REPO_BRANCH: 25.12-nss
   CONFIG_FILE: ax6.config
-  MK_FILE: ipq807x.mk
-  PATCH_FILE: sotck.patch
+  PATCH1_FILE: 0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
+  PATCH2_FILE: 0002-qualcommax-ax6-single-rootfs-upgrade.patch
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
@@ -58,16 +58,15 @@ jobs:
         # 添加红米ax6 大分区
     - name: Add ax6 fullubi
       run: |
+        [ -e $PATCH1_FILE ] && mv $PATCH1_FILE openwrt/0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
+        [ -e $PATCH1_FILE ] && mv $PATCH1_FILE openwrt/0002-qualcommax-ax6-single-rootfs-upgrade.patch
         cd openwrt
-        git clone https://github.com/biglihao/OpenWrt_x86-r2s-r4s-r5s-N1
-        cp OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/diy/target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/* target/linux/qualcommax/files/arch/arm64/boot/dts/qcom/
-        [ -e $MK_FILE ] && mv $MK_FILE target/linux/qualcommax/image/ipq807x.mk
-        ls OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/patches/
-        rm OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/patches/04-stock.patch
-        [ -e $PATCH_FILE ] && mv $PATCH_FILE OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/patches/04-stock.patch
-        find "OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/patches" -maxdepth 1 -type f -name '*.revert.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -R -B --merge -p1 -E --forward"
-        find "OpenWrt_x86-r2s-r4s-r5s-N1/devices/qualcommax_ipq807x/patches" -maxdepth 1 -type f -name '*.patch' ! -name '*.revert.patch' ! -name '*.bin.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "cat '%'  | patch -d './' -B --merge -p1 -E --forward"
-
+        git apply --check 0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
+        git apply --check 0002-qualcommax-ax6-single-rootfs-upgrade.patch
+        git apply 0001-ax3600-redmi-ax6-single-rootfs-ubi.patch
+        git apply 0002-qualcommax-ax6-single-rootfs-upgrade.patch
+        git diff --stat
+        
     - name: Load custom feeds
       run: |
         cd openwrt
@@ -95,7 +94,6 @@ jobs:
         sed -i 's/192.168.1.1/172.16.0.1/g' package/base-files/files/bin/config_generate	
         sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-light/Makefile
         ./scripts/feeds update -a
-        cat target/linux/qualcommax/image/ipq807x.mk
          
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
