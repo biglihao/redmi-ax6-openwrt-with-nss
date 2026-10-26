@@ -118,6 +118,25 @@ jobs:
 
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
 
+    - name: Fix Go version for Xray build
+      shell: bash
+      run: |
+        set -eux
+
+        GO_BIN="/opt/hostedtoolcache/go/1.27.3/x64/bin"
+
+        test -x "$GO_BIN/go"
+        "$GO_BIN/go" version
+
+        SCRIPT="feeds/packages/lang/golang/golang-build.sh"
+        test -f "$SCRIPT"
+
+        cp "$SCRIPT" "$SCRIPT.bak"
+
+        sed -i "1i export PATH=\"$GO_BIN:\$PATH\"" "$SCRIPT"
+
+        head -5 "$SCRIPT"
+
     - name: Download package
       id: package
       run: |
