@@ -10,6 +10,9 @@
 
 name: Build_Redmi_AX6_qosmio_nss
 
+permissions:
+    contents: write
+    
 on:
   repository_dispatch:
   workflow_dispatch:
